@@ -12,9 +12,14 @@ endif
 dependencies:
 	go install golang.org/x/vuln/cmd/govulncheck@latest
 	go install github.com/golang/mock/mockgen@v1.6.0
+	npm i -g @redocly/cli@latest
 
 gen: dependencies
 	go generate ./...
+
+	docker run -v ${PWD}:/activity  openapitools/openapi-generator-cli generate -i /activity/api/openapi.yaml -g typescript-node -o /activity/client/ts/ --git-user-id jesse0michael --git-repo-id activity --additional-properties=npmName=@jesse0michael/activity,npmVersion=1.0.0
+
+	redocly build-docs api/openapi.yaml -o docs/index.html 
 
 build-cli: 
 	go build -o ./bin/activity ./cmd/activity

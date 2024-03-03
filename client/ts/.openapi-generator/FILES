@@ -1,0 +1,13 @@
+.gitignore
+api.ts
+api/activityApi.ts
+api/apis.ts
+git_push.sh
+model/activity.ts
+model/activityRequest.ts
+model/errors.ts
+model/media.ts
+model/modelError.ts
+model/models.ts
+package.json
+tsconfig.json
