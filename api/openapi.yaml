@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Activity API
   description: Activity Management API
-  version: 0.0.1
+  version: 0.0.2
 servers:
   - description: Activity Host
     url: https://localhost:8080/
@@ -93,7 +93,36 @@ paths:
       description: Put activity
       operationId: putActivity
       requestBody:
-        $ref: "#/components/requestBodies/activity"
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source
+                - ts
+              properties:
+                source:
+                  description: The source platform the activity is from
+                  type: string
+                  example: "twitter"
+                ts:
+                  description: Unix timestamp (seconds) for when the item was published
+                  format: int64
+                  type: integer
+                  example: 1560802637
+                url:
+                  description: Permalink to the activity from it's source
+                  type: string
+                  example: "https://twitter.com/username/status/1234567890"
+                body:
+                  description: Text content for the item (may contain HTML)
+                  type: string
+                  example: "This is tweet"
+                media:
+                  description: Array of media items (images, videos, etc...)
+                  items:
+                    $ref: "#/components/schemas/media"
+                  type: array
       responses:
         default:
           $ref: "#/components/responses/error"
@@ -109,7 +138,33 @@ paths:
       description: Patch activity
       operationId: patchActivity
       requestBody:
-        $ref: "#/components/requestBodies/activity"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  description: The source platform the activity is from
+                  type: string
+                  example: "twitter"
+                ts:
+                  description: Unix timestamp (seconds) for when the item was published
+                  format: int64
+                  type: integer
+                  example: 1560802637
+                url:
+                  description: Permalink to the activity from it's source
+                  type: string
+                  example: "https://twitter.com/username/status/1234567890"
+                body:
+                  description: Text content for the item (may contain HTML)
+                  type: string
+                  example: "This is tweet"
+                media:
+                  description: Array of media items (images, videos, etc...)
+                  items:
+                    $ref: "#/components/schemas/media"
+                  type: array
       responses:
         default:
           $ref: "#/components/responses/error"
@@ -137,7 +192,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/activityRequest"
+            $ref: "#/components/schemas/activity"
   responses:
     error:
       description: The standard error response
@@ -194,7 +249,7 @@ components:
           type: integer
           example: 1560802637
         url:
-          description: Permalink to the activity from it's source
+          description: Permalink to the activity from its source
           type: string
           example: "https://twitter.com/username/status/1234567890"
         body:
@@ -226,31 +281,5 @@ components:
           type: string
           example: "image"
         thumbnail:
-          description: The URL to a poster image
+          description: The URL to a thumbnail image
           type: string
-    activityRequest:
-      title: Activity Request
-      type: object
-      properties:
-        source:
-          description: The source platform the activity is from
-          type: string
-          example: "twitter"
-        ts:
-          description: Unix timestamp (seconds) for when the item was published
-          format: int64
-          type: integer
-          example: 1560802637
-        url:
-          description: Permalink to the activity from it's source
-          type: string
-          example: "https://twitter.com/username/status/1234567890"
-        body:
-          description: Text content for the item (may contain HTML)
-          type: string
-          example: "This is tweet"
-        media:
-          description: Array of media items (images, videos, etc...)
-          items:
-            $ref: "#/components/schemas/media"
-          type: array
