@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Activity API
   description: Activity Management API
-  version: 0.0.0
+  version: 0.0.1
 servers:
   - description: Activity Host
     url: https://localhost:8080/
@@ -15,7 +15,7 @@ paths:
       tags:
         - Activity
       description: Get activities
-      operationId: getActivity
+      operationId: getActivities
       parameters:
         - name: source
           description: filter by activity source
@@ -66,8 +66,8 @@ paths:
           description: the created activity
   /activities/{activityID}:
     parameters:
-      - name: username
-        description: The username to target the summary for
+      - name: activityID
+        description: The activity identifier
         in: path
         required: true
         schema:
