@@ -1,0 +1,73 @@
+name: Release Workflow
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    env:
+      REF: ${{ github.ref }}
+    name: Release activity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
+
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: Docker Auth
+        run: |
+          gcloud auth configure-docker
+
+      - name: Build
+        run: |
+          docker build \
+            --file ./build/Dockerfile \
+            -t docker.pkg.github.com/jesse0michael/activity/api:${REF##*/} \
+            -t us.gcr.io/${{ steps.auth.outputs.project_id }}/activity:${REF##*/} .
+
+      - name: Push Images
+        run: |
+          docker login docker.pkg.github.com -u Jesse0Michael -p ${{ secrets.PAT }}
+          docker push docker.pkg.github.com/jesse0michael/activity/api:${REF##*/}
+
+          docker push us.gcr.io/${{ steps.auth.outputs.project_id }}/activity:${REF##*/}
+
+  release-client:
+    env:
+      REF: ${{ github.ref }}
+    name: Release Node Client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Node Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+          scope: "@jesse0michael"
+
+      - name: Build Client
+        working-directory: client/ts
+        run: |
+          npm install
+          npm run build
+
+      - name: Publish Client
+        working-directory: client/ts
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken=$NODE_AUTH_TOKEN
+          npm config set scope "jesse0michael"
+          npm version ${REF##*/}
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PAT }}
