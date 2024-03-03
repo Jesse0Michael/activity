@@ -1,0 +1,256 @@
+openapi: 3.0.3
+info:
+  title: Activity API
+  description: Activity Management API
+  version: 0.0.0
+servers:
+  - description: Activity Host
+    url: https://localhost:8080/
+tags:
+  - name: Activity
+    description: Handles Activity CRUD
+paths:
+  /activities:
+    get:
+      tags:
+        - Activity
+      description: Get activities
+      operationId: getActivity
+      parameters:
+        - name: source
+          description: filter by activity source
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "instagram"
+        - name: limit
+          description: The number of results to return in the response
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 25
+          example: 25
+        - name: offset
+          description: The number of results to skip when paginating the response
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 50
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activity"
+          description: the activity results
+    post:
+      tags:
+        - Activity
+      description: Post activities
+      operationId: postActivity
+      requestBody:
+        $ref: "#/components/requestBodies/activity"
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activity"
+          description: the created activity
+  /activities/{activityID}:
+    parameters:
+      - name: username
+        description: The username to target the summary for
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "hnoy78d34qdty3"
+    get:
+      tags:
+        - Activity
+      description: Get activity
+      operationId: getActivity
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activity"
+          description: the activity
+    put:
+      tags:
+        - Activity
+      description: Put activity
+      operationId: putActivity
+      requestBody:
+        $ref: "#/components/requestBodies/activity"
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "200":
+          description: The updated activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activity"
+    patch:
+      tags:
+        - Activity
+      description: Patch activity
+      operationId: patchActivity
+      requestBody:
+        $ref: "#/components/requestBodies/activity"
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activity"
+          description: the activity
+    delete:
+      tags:
+        - Activity
+      description: Delete activity
+      operationId: deleteActivity
+      responses:
+        default:
+          $ref: "#/components/responses/error"
+        "204":
+          description: No content response
+components:
+  requestBodies:
+    activity:
+      description: the activity attributes to create or modify
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/activityRequest"
+  responses:
+    error:
+      description: The standard error response
+      content:
+        application/json:
+          schema:
+            title: Errors
+            type: object
+            required:
+              - errors
+            properties:
+              requestID:
+                type: string
+                description: An identifier for the request.
+                example: 2191e70c352abba2c3723eb77f98ae50
+              errors:
+                type: array
+                items:
+                  $ref: "#/components/schemas/error"
+  schemas:
+    error:
+      title: Error
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: The error message
+          type: string
+          example: "resource not found"
+        details:
+          description: Additional details of the error
+          type: string
+          example: "resource: test-resource"
+    activity:
+      title: Activity
+      type: object
+      required:
+        - id
+        - source
+        - ts
+      properties:
+        id:
+          description: Unique identifier for the activity
+          type: string
+          example: "hnoy78d34qdty3"
+        source:
+          description: The source platform the activity is from
+          type: string
+          example: "twitter"
+        ts:
+          description: Unix timestamp (seconds) for when the item was published
+          format: int64
+          type: integer
+          example: 1560802637
+        url:
+          description: Permalink to the activity from it's source
+          type: string
+          example: "https://twitter.com/username/status/1234567890"
+        body:
+          description: Text content for the item (may contain HTML)
+          type: string
+          example: "This is tweet"
+        media:
+          description: Array of media items (images, videos, etc...)
+          items:
+            $ref: "#/components/schemas/media"
+          type: array
+    media:
+      title: Media
+      type: object
+      required:
+        - url
+        - kind
+      properties:
+        url:
+          description: The URL to the media content
+          type: string
+          example: "https://example.com/image.jpg"
+        kind:
+          description: The kind of media
+          enum:
+            - image
+            - video
+            - audio
+          type: string
+          example: "image"
+        thumbnail:
+          description: The URL to a poster image
+          type: string
+    activityRequest:
+      title: Activity Request
+      type: object
+      properties:
+        source:
+          description: The source platform the activity is from
+          type: string
+          example: "twitter"
+        ts:
+          description: Unix timestamp (seconds) for when the item was published
+          format: int64
+          type: integer
+          example: 1560802637
+        url:
+          description: Permalink to the activity from it's source
+          type: string
+          example: "https://twitter.com/username/status/1234567890"
+        body:
+          description: Text content for the item (may contain HTML)
+          type: string
+          example: "This is tweet"
+        media:
+          description: Array of media items (images, videos, etc...)
+          items:
+            $ref: "#/components/schemas/media"
+          type: array
