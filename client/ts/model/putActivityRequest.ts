@@ -13,11 +13,7 @@
 import { RequestFile } from './models';
 import { Media } from './media';
 
-export class Activity {
-    /**
-    * Unique identifier for the activity
-    */
-    'id': string;
+export class PutActivityRequest {
     /**
     * The source platform the activity is from
     */
@@ -27,7 +23,7 @@ export class Activity {
     */
     'ts': number;
     /**
-    * Permalink to the activity from its source
+    * Permalink to the activity from it\'s source
     */
     'url'?: string;
     /**
@@ -42,11 +38,6 @@ export class Activity {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
-        {
-            "name": "id",
-            "baseName": "id",
-            "type": "string"
-        },
         {
             "name": "source",
             "baseName": "source",
@@ -74,7 +65,7 @@ export class Activity {
         }    ];
 
     static getAttributeTypeMap() {
-        return Activity.attributeTypeMap;
+        return PutActivityRequest.attributeTypeMap;
     }
 }
 

@@ -1,10 +1,11 @@
 import localVarRequest from 'request';
 
 export * from './activity';
-export * from './activityRequest';
 export * from './errors';
 export * from './media';
 export * from './modelError';
+export * from './patchActivityRequest';
+export * from './putActivityRequest';
 
 import * as fs from 'fs';
 
@@ -20,10 +21,11 @@ export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
 import { Activity } from './activity';
-import { ActivityRequest } from './activityRequest';
 import { Errors } from './errors';
 import { Media } from './media';
 import { ModelError } from './modelError';
+import { PatchActivityRequest } from './patchActivityRequest';
+import { PutActivityRequest } from './putActivityRequest';
 
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -43,10 +45,11 @@ let enumsMap: {[index: string]: any} = {
 
 let typeMap: {[index: string]: any} = {
     "Activity": Activity,
-    "ActivityRequest": ActivityRequest,
     "Errors": Errors,
     "Media": Media,
     "ModelError": ModelError,
+    "PatchActivityRequest": PatchActivityRequest,
+    "PutActivityRequest": PutActivityRequest,
 }
 
 export class ObjectSerializer {

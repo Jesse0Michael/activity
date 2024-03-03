@@ -4,10 +4,11 @@ api/activityApi.ts
 api/apis.ts
 git_push.sh
 model/activity.ts
-model/activityRequest.ts
 model/errors.ts
 model/media.ts
 model/modelError.ts
 model/models.ts
+model/patchActivityRequest.ts
+model/putActivityRequest.ts
 package.json
 tsconfig.json
