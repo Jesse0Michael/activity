@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -21,15 +21,15 @@ func main() {
 	logger.NewLogger()
 	var cfg server.Config
 	if err := envconfig.Process("", &cfg); err != nil {
-		cancel(fmt.Errorf("failed to process config"))
+		cancel(errors.New("failed to process config"))
 	}
 
 	// Initialize dependencies
 
 	// Start application
-	srvr := server.New(cfg)
+	srvr := server.New(cfg, nil)
 	go func() {
-		if err := srvr.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srvr.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			cancel(err)
 		}
 	}()

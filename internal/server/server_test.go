@@ -7,7 +7,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	server := New(Config{})
+	server := New(Config{}, nil)
 
-	assert.NotNil(t, server.router, "router should not be nil")
+	assert.NotNil(t, server.Server, "router should not be nil")
 }

@@ -4,15 +4,15 @@ import (
 	"net/http"
 )
 
-func routes() *http.ServeMux {
+func routes(activityService ActivityHandler) *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /activities", nil)
-	mux.HandleFunc("POST /activities", nil)
-	mux.HandleFunc("GET /activivites/{activityID}", nil)
-	mux.HandleFunc("PUT /activivites/{activityID}", nil)
-	mux.HandleFunc("PATCH /activivites/{activityID}", nil)
-	mux.HandleFunc("DELETE /activivites/{activityID}", nil)
+	mux.HandleFunc("GET /activities", HandleActivities(activityService))
+	mux.HandleFunc("POST /activities", HandleCreateActivity(activityService))
+	mux.HandleFunc("GET /activities/{activityID}", HandleActivity(activityService))
+	mux.HandleFunc("PUT /activities/{activityID}", HandleUpdateActivity(activityService))
+	mux.HandleFunc("PATCH /activities/{activityID}", HandlePatchActivity(activityService))
+	mux.HandleFunc("DELETE /activities/{activityID}", HandleDeleteActivity(activityService))
 
 	return mux
 }
